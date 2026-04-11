@@ -1,0 +1,26 @@
+{
+  "name": "build4me_api",
+  "version": "1.0.0",
+  "description": "Build4Me is an AI-powered construction milestone verification platform designed for diaspora-funded building projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lotsueugene/build4me_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lotsueugene/build4me_api/issues"
+  },
+  "homepage": "https://github.com/lotsueugene/build4me_api#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "sequelize": "^6.37.8",
+    "sqlite3": "^6.0.1"
+  }
+}
