@@ -4,7 +4,10 @@
   "description": "Build4Me is an AI-powered construction milestone verification platform designed for diaspora-funded building projects.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+      "setup": "npm install",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
