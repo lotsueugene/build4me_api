@@ -2,11 +2,12 @@
   "name": "build4me_api",
   "version": "1.0.0",
   "description": "Build4Me is an AI-powered construction milestone verification platform designed for diaspora-funded building projects.",
-  "main": "index.js",
+  "main": "sever.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "setup": "npm install",
-    "start": "node index.js",
+    "start": "node sever.js",
+    "seed": "node database/seed.js",
     "dev": "nodemon index.js"
   },
   "repository": {
@@ -26,5 +27,8 @@
     "express": "^5.2.1",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }

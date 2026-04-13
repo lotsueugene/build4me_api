@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize} = require('sequelize');
 require('dotenv').config();
 
 
@@ -22,6 +22,8 @@ async function initializeDatabase() {
     }
 }
 
+
 initializeDatabase();
 
+//Export
 module.exports = db;
