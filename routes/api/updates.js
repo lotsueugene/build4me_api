@@ -1,0 +1,69 @@
+const router = require('express').Router();
+const { Update } = require('../../database/index');
+
+// GET all updates
+router.get('/', async (req, res, next) => {
+    try {
+        const updates = await Update.findAll();
+        res.json(updates);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// GET one update by ID
+router.get('/:id', async (req, res, next) => {
+    try {
+        const update = await Update.findByPk(req.params.id);
+        if (!update) {
+            return res.status(404).json({ error: 'Update not found' });
+        }
+        res.json(update);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// POST create an update
+router.post('/', async (req, res, next) => {
+    try {
+        const { description, mediaUrl, status, projectId, userId } = req.body;
+        if (!description || !projectId || !userId) {
+            return res.status(400).json({ error: 'Description, projectId, and userId are required' });
+        }
+        const update = await Update.create({ description, mediaUrl, status, projectId, userId });
+        res.status(201).json(update);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// PUT update an update
+router.put('/:id', async (req, res, next) => {
+    try {
+        const update = await Update.findByPk(req.params.id);
+        if (!update) {
+            return res.status(404).json({ error: 'Update not found' });
+        }
+        await update.update(req.body);
+        res.json(update);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// DELETE an update
+router.delete('/:id', async (req, res, next) => {
+    try {
+        const update = await Update.findByPk(req.params.id);
+        if (!update) {
+            return res.status(404).json({ error: 'Update not found' });
+        }
+        await update.destroy();
+        res.status(200).json({ message: 'Update deleted successfully' });
+    } catch (err) {
+        next(err);
+    }
+});
+
+module.exports = router;
