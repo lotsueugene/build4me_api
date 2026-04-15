@@ -2,6 +2,9 @@
 
 Build4Me is an AI-powered construction milestone verification platform designed for diaspora-funded building projects. Clients can track construction progress, contractors can post updates, and inspectors can verify milestones.
 
+## API Documentation
+https://documenter.getpostman.com/view/51612020/2sBXqCPPa6#c97aa43e-8df0-455d-b70c-4e63c8c769d6
+
 ## Tech Stack
 
 - **Runtime:** Node.js
