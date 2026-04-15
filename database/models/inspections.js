@@ -24,10 +24,26 @@ const Inspection = db.define('Inspection', {
     inspectionDate: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+
+    projectId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
+    inspectorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
+    updateId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
     }
-}, {
-    timestamps: true
-});
+    }, 
+    {
+        timestamps: true
+    });
 
 
 //export
