@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const { Update } = require('../../database/index');
+const requireAuth = require('../../middleware/auth');
 
 // GET all updates
-router.get('/', async (req, res, next) => {
+router.get('/', requireAuth, async (req, res, next) => {
     try {
         const updates = await Update.findAll();
         res.json(updates);
@@ -12,7 +13,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // GET one update by ID
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', requireAuth,  async (req, res, next) => {
     try {
         const update = await Update.findByPk(req.params.id);
         if (!update) {
@@ -25,7 +26,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST create an update
-router.post('/', async (req, res, next) => {
+router.post('/', requireAuth, async (req, res, next) => {
     try {
         const { description, mediaUrl, status, projectId, userId } = req.body;
         if (!description || !projectId || !userId) {
@@ -39,7 +40,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // PUT update an update
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', requireAuth, async (req, res, next) => {
     try {
         const update = await Update.findByPk(req.params.id);
         if (!update) {
@@ -53,7 +54,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // DELETE an update
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireAuth, async (req, res, next) => {
     try {
         const update = await Update.findByPk(req.params.id);
         if (!update) {
