@@ -2,7 +2,7 @@
   "name": "build4me_api",
   "version": "1.0.0",
   "description": "Build4Me is an AI-powered construction milestone verification platform designed for diaspora-funded building projects.",
-  "main": "sever.js",
+  "main": "server.js",
   "scripts": {
     "setup": "npm install",
     "start": "node server.js",
