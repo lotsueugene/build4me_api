@@ -2,14 +2,11 @@ const router = require('express').Router();
 const { User } = require('../../database/index');
 const {
     requireAuth,
-    requireRole,
-    loadProject,
-    requireProjectOwner,
-    requireProjectContractor,
+    requireRole
 } = require('../../middleware/auth');
 
 // GET all users
-router.get('/', requireAuth, async (req, res) => {
+router.get('/', requireAuth,requireRole(['admin']), async (req, res) => {
     try {
         const users = await User.findAll({
             attributes: ['id', 'name', 'email', 'role'] // Don't return passwords
@@ -23,7 +20,7 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 // GET one user by ID
-router.get('/:id', requireAuth, async (req, res, next) => {
+router.get('/:id', requireAuth,requireRole(['admin']), async (req, res, next) => {
     try {
         const user = await User.findByPk(req.params.id);
         if (!user) {
@@ -37,7 +34,7 @@ router.get('/:id', requireAuth, async (req, res, next) => {
 });
 
 // POST create a user
-router.post('/', requireAuth, async (req, res, next) => {
+router.post('/', requireAuth,requireRole(['admin']), async (req, res, next) => {
     try {
         const { name, email, password, role } = req.body;
         if (!name || !email || !password) {
@@ -52,7 +49,7 @@ router.post('/', requireAuth, async (req, res, next) => {
 });
 
 // PUT update a user
-router.put('/:id',requireAuth, async (req, res, next) => {
+router.put('/:id',requireAuth, requireRole(['admin']), async (req, res, next) => {
     try {
         const user = await User.findByPk(req.params.id);
         if (!user) {
@@ -67,7 +64,7 @@ router.put('/:id',requireAuth, async (req, res, next) => {
 });
 
 // DELETE a user
-router.delete('/:id', requireAuth, async (req, res, next) => {
+router.delete('/:id', requireAuth, requireRole(['admin']), async (req, res, next) => {
     try {
         const user = await User.findByPk(req.params.id);
         if (!user) {
