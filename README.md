@@ -162,7 +162,7 @@ Authenticates a user and returns a JWT.
 | Status | Body |
 |--------|------|
 | `200 OK` | `{ "message": "Login successful", "token": "<jwt>", "user": { "id", "name", "email" } }` |
-| `401 Unauthorized` | `{ "error": "Invalid email or password" }` (unknown email or wrong password) |
+| `401 Unauthorized` | `{ "error": "Invalid email or password" }` |
 | `500 Internal Server Error` | `{ "error": "Failed to login" }` |
 
 The JWT payload includes `id`, `name`, `email`, and `role`. Use it on protected routes as:
