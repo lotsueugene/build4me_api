@@ -25,7 +25,8 @@ router.get('/:id', requireAuth, async (req, res, next) => {
         }
         res.json(user);
     } catch (err) {
-        next(err);
+        console.error('Error fetching user by id:', err);
+        res.status(500).json({ error: 'Failed to fetch user by id' });
     }
 });
 
@@ -39,7 +40,8 @@ router.post('/', requireAuth, async (req, res, next) => {
         const user = await User.create({ name, email, password, role });
         res.status(201).json(user);
     } catch (err) {
-        next(err);
+        console.error('Error creating a user:', err);
+        res.status(500).json({ error: 'Failed to create a user' });
     }
 });
 
@@ -53,7 +55,8 @@ router.put('/:id',requireAuth, async (req, res, next) => {
         await user.update(req.body);
         res.json(user);
     } catch (err) {
-        next(err);
+        console.error('Error updating user:', err);
+        res.status(500).json({ error: 'Failed to update a user' });
     }
 });
 
@@ -67,7 +70,8 @@ router.delete('/:id', requireAuth, async (req, res, next) => {
         await user.destroy();
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (err) {
-        next(err);
+        console.error('Error deleting user:', err);
+        res.status(500).json({ error: 'Failed to delete user' });
     }
 });
 

@@ -8,7 +8,8 @@ router.get('/', requireAuth, async (req, res, next) => {
         const updates = await Update.findAll();
         res.json(updates);
     } catch (err) {
-        next(err);
+        console.error('Error fetching all updates:', err);
+        res.status(500).json({ error: 'Failed to fetch all updates' });
     }
 });
 
@@ -21,7 +22,8 @@ router.get('/:id', requireAuth,  async (req, res, next) => {
         }
         res.json(update);
     } catch (err) {
-        next(err);
+        console.error('Error fetching update by id:', err);
+        res.status(500).json({ error: 'Failed to fetch  update by id' });
     }
 });
 
@@ -35,7 +37,8 @@ router.post('/', requireAuth, async (req, res, next) => {
         const update = await Update.create({ description, mediaUrl, status, projectId, userId });
         res.status(201).json(update);
     } catch (err) {
-        next(err);
+        console.error('Error creating an update:', err);
+        res.status(500).json({ error: 'Failed to create an update' });
     }
 });
 
@@ -49,7 +52,8 @@ router.put('/:id', requireAuth, async (req, res, next) => {
         await update.update(req.body);
         res.json(update);
     } catch (err) {
-        next(err);
+        console.error('Error updating an update:', err);
+        res.status(500).json({ error: 'Failed to update an update' });
     }
 });
 
@@ -63,7 +67,8 @@ router.delete('/:id', requireAuth, async (req, res, next) => {
         await update.destroy();
         res.status(200).json({ message: 'Update deleted successfully' });
     } catch (err) {
-        next(err);
+        console.error('Error deleting an update:', err);
+        res.status(500).json({ error: 'Failed to delete an update' });
     }
 });
 

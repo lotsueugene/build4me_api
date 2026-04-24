@@ -8,7 +8,8 @@ router.get('/', requireAuth, async (req, res, next) => {
         const projects = await Project.findAll();
         res.json(projects);
     } catch (err) {
-        next(err);
+        console.error('Error fetching all project:', err);
+        res.status(500).json({ error: 'Failed to fetch all projects'});
     }
 });
 
@@ -21,7 +22,8 @@ router.get('/:id', requireAuth, async (req, res, next) => {
         }
         res.json(project);
     } catch (err) {
-        next(err);
+        console.error('Error fetching project by id:', err);
+        res.status(500).json({ error: 'Failed to fetch project by id'});
     }
 });
 
@@ -35,7 +37,8 @@ router.post('/', requireAuth, async (req, res, next) => {
         const project = await Project.create({ title, description, location, startDate, status, clientId, contractorId });
         res.status(201).json(project);
     } catch (err) {
-        next(err);
+        console.error('Error creating a  project:', err);
+        res.status(500).json({ error: 'Failed to craete a project'});
     }
 });
 
@@ -49,7 +52,8 @@ router.put('/:id', requireAuth, async (req, res, next) => {
         await project.update(req.body);
         res.json(project);
     } catch (err) {
-        next(err);
+        console.error('Error updating a  project:', err);
+        res.status(500).json({ error: 'Failed to update a project'});
     }
 });
 
@@ -63,7 +67,8 @@ router.delete('/:id', requireAuth, async (req, res, next) => {
         await project.destroy();
         res.status(200).json({ message: 'Project deleted successfully' });
     } catch (err) {
-        next(err);
+        console.error('Error deleting a project:', err);
+        res.status(500).json({ error: 'Failed to delete a project'});
     }
 });
 

@@ -3,12 +3,13 @@ const { Inspection } = require('../../database/index');
 const requireAuth = require('../../middleware/auth');
 
 // GET all inspections
-router.get('/', async (req, res, next) => {
+router.get('/', requireAuth, async (req, res, next) => {
     try {
         const inspections = await Inspection.findAll();
         res.json(inspections);
     } catch (err) {
-        next(err);
+        console.error('Error fetching all inspections:', err);
+        res.status(500).json({ error: 'Failed to fetch all inspections'});
     }
 });
 
@@ -21,7 +22,8 @@ router.get('/:id', requireAuth, async (req, res, next) => {
         }
         res.json(inspection);
     } catch (err) {
-        next(err);
+        console.error('Error fetching inspection by id:', err);
+        res.status(500).json({ error: 'Failed to fetch inspection by id'});
     }
 });
 
@@ -35,7 +37,8 @@ router.post('/', requireAuth, async (req, res, next) => {
         const inspection = await Inspection.create({ status, comments, inspectionDate, projectId, inspectorId, updateId });
         res.status(201).json(inspection);
     } catch (err) {
-        next(err);
+        console.error('Error creating an inspection:', err);
+        res.status(500).json({ error: 'Failed to create an inspection'});
     }
 });
 
@@ -49,7 +52,8 @@ router.put('/:id',requireAuth, async (req, res, next) => {
         await inspection.update(req.body);
         res.json(inspection);
     } catch (err) {
-        next(err);
+        console.error('Error updating an inspection:', err);
+        res.status(500).json({ error: 'Failed to update an inspection'});
     }
 });
 
@@ -63,7 +67,8 @@ router.delete('/:id', requireAuth, async (req, res, next) => {
         await inspection.destroy();
         res.status(200).json({ message: 'Inspection deleted successfully' });
     } catch (err) {
-        next(err);
+        console.error('Error deleting an inspection:', err);
+        res.status(500).json({ error: 'Failed to delete an inspection'});
     }
 });
 
