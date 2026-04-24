@@ -1,13 +1,27 @@
-const { Sequelize} = require('sequelize');
+const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
+function createConnection() {
+    const url = process.env.DATABASE_URL;
+    if (url && String(url).trim() !== '') {
+        return new Sequelize(url, {
+            logging: false,
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false
+                }
+            }
+        });
+    }
+    return new Sequelize({
+        dialect: 'sqlite',
+        storage: `database/${process.env.DB_NAME || 'build4me.db'}`,
+        logging: false
+    });
+}
 
-// Initialize database connection
-const db = new Sequelize({
-    dialect: 'sqlite',
-    storage: `database/${process.env.DB_NAME || 'build4me.db'}`,
-    logging: false
-});
+const db = createConnection();
 
 // Initialize database
 async function initializeDatabase() {

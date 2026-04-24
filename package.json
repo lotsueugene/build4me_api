@@ -4,6 +4,7 @@
   "description": "Build4Me is an AI-powered construction milestone verification platform designed for diaspora-funded building projects.",
   "main": "server.js",
   "scripts": {
+    "postinstall": "npm rebuild sqlite3",
     "setup": "npm install",
     "start": "node server.js",
     "seed": "node database/seed.js",
@@ -28,6 +29,7 @@
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
   },
