@@ -2,13 +2,20 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { User } = require('../../database/index');
+const {check, validationResult} = require("express-validator")
 
 
 // AUTHENTICATION ROUTES
 const router = express.Router();
 
 // POST /api/auth/register - Register new user
-router.post('/register', async (req, res) => {
+router.post('/register', [check("email", "Valid email is required").isEmail(),
+     check("password", "Password required").exists()
+    ], async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()){
+            return res.status(400).json({errors: errors.array()})
+        };
     try {
         const { name, email, password, role} = req.body;
         

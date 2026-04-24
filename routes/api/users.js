@@ -6,6 +6,7 @@ const {
 } = require('../../middleware/auth');
 const bcrypt = require('bcrypt');
 
+
 // GET all users
 router.get('/', requireAuth,requireAdmin, async (req, res) => {
     try {
@@ -21,7 +22,7 @@ router.get('/', requireAuth,requireAdmin, async (req, res) => {
 });
 
 // GET one user by ID
-router.get('/:id', requireAuth,requireAdmin, async (req, res, next) => {
+router.get('/:id', requireAuth,requireAdmin, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id, {
             attributes: ['id', 'name', 'email', 'role'],
@@ -38,18 +39,24 @@ router.get('/:id', requireAuth,requireAdmin, async (req, res, next) => {
 });
 
 // POST create a user
-router.post('/', requireAuth, requireAdmin, async (req, res, next) => {
+router.post('/', requireAuth, requireAdmin, async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'Name, email, and password are required' });
-        }
+        };
 
+        // Check if user exists
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({ error: 'User with this email already exists' });
+        };
+        
         const allowedRoles = ['client', 'contractor', 'inspector', 'admin'];
         const resolvedRole = role ?? 'client';
         if (!allowedRoles.includes(resolvedRole)) {
             return res.status(400).json({ error: 'Invalid role' });
-        }
+        };
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -71,7 +78,7 @@ router.post('/', requireAuth, requireAdmin, async (req, res, next) => {
 });
 
 // PUT update a user
-router.put('/:id', requireAuth, requireAdmin, async (req, res, next) => {
+router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
         if (!user) {
@@ -111,7 +118,7 @@ router.put('/:id', requireAuth, requireAdmin, async (req, res, next) => {
 });
 
 // DELETE a user
-router.delete('/:id', requireAuth, requireAdmin, async (req, res, next) => {
+router.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
         if (!user) {
