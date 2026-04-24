@@ -1,6 +1,12 @@
 const router = require('express').Router();
 const { User } = require('../../database/index');
-const requireAuth = require('../../middleware/auth');
+const {
+    requireAuth,
+    requireRole,
+    loadProject,
+    requireProjectOwner,
+    requireProjectContractor,
+} = require('../../middleware/auth');
 
 // GET all users
 router.get('/', requireAuth, async (req, res) => {

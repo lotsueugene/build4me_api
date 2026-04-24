@@ -43,7 +43,7 @@ const User = db.define('User', {
         defaultValue: 'client',
         validate: {
             notEmpty: true,
-            isIn: [['client', 'contractor', 'inspector']]
+            isIn: [['client', 'contractor', 'inspector', 'admin']]
         }
     }
 

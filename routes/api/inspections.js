@@ -1,25 +1,47 @@
 const router = require('express').Router();
 const { Inspection } = require('../../database/index');
-const requireAuth = require('../../middleware/auth');
+const {
+    requireAuth,
+    requireRole
+} = require('../../middleware/auth');
 
-// GET all inspections
-router.get('/', requireAuth, async (req, res, next) => {
+// GET all inspections | Client and Inspector can view
+router.get('/', requireAuth, requireRole(['inspector', 'client']), async (req, res) => {
     try {
-        const inspections = await Inspection.findAll();
+        let where = {};
+
+        if (req.user.role === 'client') {
+            where = { clientId: req.user.id };
+        } else if (req.user.role === 'inspector') {
+            where = { inspectorId: req.user.id };
+        }
+
+        const inspections = await Inspection.findAll({ where });
+
         res.json(inspections);
     } catch (err) {
-        console.error('Error fetching all inspections:', err);
-        res.status(500).json({ error: 'Failed to fetch all inspections'});
+        console.error('Error fetching inspections:', err);
+        res.status(500).json({ error: 'Failed to fetch inspections' });
     }
 });
 
-// GET one inspection by ID
-router.get('/:id', requireAuth, async (req, res, next) => {
+// GET one inspection by ID | Client and Inspector can view
+router.get('/:id', requireAuth, requireRole(['inspector','client']), async (req, res) => {
     try {
-        const inspection = await Inspection.findByPk(req.params.id);
+        let where = { id: req.params.id };
+
+        if (req.user.role === 'client') {
+            where.clientId = req.user.id;
+        } else if (req.user.role === 'inspector') {
+            where.inspectorId = req.user.id;
+        }
+
+        const inspection = await Inspection.findOne({ where });
+
         if (!inspection) {
             return res.status(404).json({ error: 'Inspection not found' });
         }
+
         res.json(inspection);
     } catch (err) {
         console.error('Error fetching inspection by id:', err);
@@ -27,8 +49,8 @@ router.get('/:id', requireAuth, async (req, res, next) => {
     }
 });
 
-// POST create an inspection
-router.post('/', requireAuth, async (req, res, next) => {
+// POST create an inspection | Only an inspector can
+router.post('/', requireAuth,requireRole(['inspector']), async (req, res) => {
     try {
         const { status, comments, inspectionDate, projectId, inspectorId, updateId } = req.body;
         if (!status || !projectId || !inspectorId || !updateId) {
@@ -42,8 +64,8 @@ router.post('/', requireAuth, async (req, res, next) => {
     }
 });
 
-// PUT update an inspection
-router.put('/:id',requireAuth, async (req, res, next) => {
+// PUT update an inspection | Only an inspector can
+router.put('/:id',requireAuth, requireRole(['inspector']), async (req, res) => {
     try {
         const inspection = await Inspection.findByPk(req.params.id);
         if (!inspection) {
@@ -57,8 +79,8 @@ router.put('/:id',requireAuth, async (req, res, next) => {
     }
 });
 
-// DELETE an inspection
-router.delete('/:id', requireAuth, async (req, res, next) => {
+// DELETE an inspection | Only an inspector can
+router.delete('/:id', requireAuth, requireRole(['inspector']), async (req, res) => {
     try {
         const inspection = await Inspection.findByPk(req.params.id);
         if (!inspection) {
