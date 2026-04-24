@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Inspection } = require('../../database/index');
+const requireAuth = require('../../middleware/auth');
 
 // GET all inspections
 router.get('/', async (req, res, next) => {
@@ -12,7 +13,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // GET one inspection by ID
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', requireAuth, async (req, res, next) => {
     try {
         const inspection = await Inspection.findByPk(req.params.id);
         if (!inspection) {
@@ -25,7 +26,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST create an inspection
-router.post('/', async (req, res, next) => {
+router.post('/', requireAuth, async (req, res, next) => {
     try {
         const { status, comments, inspectionDate, projectId, inspectorId, updateId } = req.body;
         if (!status || !projectId || !inspectorId || !updateId) {
@@ -39,7 +40,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // PUT update an inspection
-router.put('/:id', async (req, res, next) => {
+router.put('/:id',requireAuth, async (req, res, next) => {
     try {
         const inspection = await Inspection.findByPk(req.params.id);
         if (!inspection) {
@@ -53,7 +54,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // DELETE an inspection
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireAuth, async (req, res, next) => {
     try {
         const inspection = await Inspection.findByPk(req.params.id);
         if (!inspection) {
