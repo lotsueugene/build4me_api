@@ -9,6 +9,8 @@ const usersRouter = require('./routes/api/users');
 const projectsRouter = require('./routes/api/projects');
 const inspectionsRouter = require('./routes/api/inspections');
 const updatesRouter = require('./routes/api/updates');
+const authRouter = require('./routes/api/auth');
+
 
 
 const app = express();
@@ -35,6 +37,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/inspections', inspectionsRouter);
 app.use('/api/updates', updatesRouter);
+app.use('/api/auth', authRouter);
 
 // Error handler 
 app.use(errorHandler);
