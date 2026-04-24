@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const { Project, User } = require('../../database/index');
+const { Project } = require('../../database/index');
+const requireAuth = require('../../middleware/auth');
 
 // GET all projects
-router.get('/', async (req, res, next) => {
+router.get('/', requireAuth, async (req, res, next) => {
     try {
         const projects = await Project.findAll();
         res.json(projects);
@@ -12,7 +13,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // GET one project by ID
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', requireAuth, async (req, res, next) => {
     try {
         const project = await Project.findByPk(req.params.id);
         if (!project) {
@@ -25,7 +26,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST create a project
-router.post('/', async (req, res, next) => {
+router.post('/', requireAuth, async (req, res, next) => {
     try {
         const { title, description, location, startDate, status, clientId, contractorId } = req.body;
         if (!title || !location || !startDate) {
@@ -39,7 +40,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // PUT update a project
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', requireAuth, async (req, res, next) => {
     try {
         const project = await Project.findByPk(req.params.id);
         if (!project) {
@@ -53,7 +54,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // DELETE a project
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireAuth, async (req, res, next) => {
     try {
         const project = await Project.findByPk(req.params.id);
         if (!project) {
