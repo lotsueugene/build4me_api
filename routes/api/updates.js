@@ -6,23 +6,28 @@ const {
 } = require('../../middleware/auth');
 
 // GET all updates
-router.get('/', requireAuth, requireRole(['client', 'contractor']), async (req, res) => {
+router.get('/', requireAuth, requireRole(['client', 'contractor', 'admin']), async (req, res) => {
   try {
-    const me = req.user.id;
+    let updates;
 
-    const projectWhere =
-      req.user.role === 'client'
-        ? { clientId: me }
-        : { contractorId: me };
+    if (req.user.role === 'admin') {
+      updates = await Update.findAll({ include: [{ model: Project, required: false }] });
+    } else {
+      const me = req.user.id;
+      const projectWhere =
+        req.user.role === 'client'
+          ? { clientId: me }
+          : { contractorId: me };
 
-    const updates = await Update.findAll({
-      include: [{
-        model: Project,
-        where: projectWhere,
-        attributes: [],
-        required: true,
-      }],
-    });
+      updates = await Update.findAll({
+        include: [{
+          model: Project,
+          where: projectWhere,
+          attributes: [],
+          required: true,
+        }],
+      });
+    }
 
     return res.json(updates);
   } catch (err) {
@@ -32,7 +37,7 @@ router.get('/', requireAuth, requireRole(['client', 'contractor']), async (req, 
 });
 
 // GET one update by ID
-router.get('/:id', requireAuth, requireRole(['client', 'contractor']), async (req, res) => {
+router.get('/:id', requireAuth, requireRole(['client', 'contractor', 'admin']), async (req, res) => {
   try {
     const me = req.user.id;
 
@@ -44,9 +49,11 @@ router.get('/:id', requireAuth, requireRole(['client', 'contractor']), async (re
       return res.status(404).json({ error: 'Update not found' });
     }
 
-    const p = update.Project;
-    if (p.clientId !== me && p.contractorId !== me) {
-      return res.status(403).json({ error: 'You do not have access to this update' });
+    if (req.user.role !== 'admin') {
+      const p = update.Project;
+      if (p.clientId !== me && p.contractorId !== me) {
+        return res.status(403).json({ error: 'You do not have access to this update' });
+      }
     }
 
     return res.json(update);

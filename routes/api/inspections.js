@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const { Inspection, Project } = require('../../database/index');
+const { Inspection, Project, Update } = require('../../database/index');
 const {
     requireAuth,
     requireRole
 } = require('../../middleware/auth');
 
 // GET all inspections | Client and Inspector can view
-router.get('/', requireAuth, requireRole(['inspector', 'client']), async (req, res) => {
+router.get('/', requireAuth, requireRole(['inspector', 'client', 'admin']), async (req, res) => {
     try {
         let inspections;
 
@@ -19,9 +19,13 @@ router.get('/', requireAuth, requireRole(['inspector', 'client']), async (req, r
                     attributes: [],
                 }],
             });
-        } else {
+        } else if (req.user.role === 'inspector') {
             inspections = await Inspection.findAll({
                 where: { inspectorId: req.user.id },
+            });
+        } else {
+            inspections = await Inspection.findAll({
+                include: [{ model: Project, required: false }],
             });
         }
 
@@ -33,7 +37,7 @@ router.get('/', requireAuth, requireRole(['inspector', 'client']), async (req, r
 });
 
 // GET one inspection by ID | Client and Inspector can view
-router.get('/:id', requireAuth, requireRole(['inspector', 'client']), async (req, res) => {
+router.get('/:id', requireAuth, requireRole(['inspector', 'client', 'admin']), async (req, res) => {
     try {
         const inspection = await Inspection.findOne({
             where: { id: req.params.id },
