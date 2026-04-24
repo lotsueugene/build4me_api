@@ -1,4 +1,4 @@
-# Build4Me API MVP
+# Build4Me API 
 
 Build4Me is an AI-powered construction milestone verification platform designed for diaspora-funded building projects. Clients can track construction progress, contractors can post updates, and inspectors can verify milestones.
 
@@ -29,7 +29,11 @@ npm install
 ```
 PORT=3000
 DB_NAME=build4me.db
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=7d
 ```
+
+`JWT_SECRET` and `JWT_EXPIRES_IN` are required for issuing tokens on login. Protected routes expect `Authorization: Bearer <token>`.
 
 4. Seed the database:
 ```bash
@@ -61,7 +65,7 @@ The server will run at `http://localhost:3000`.
 | name | STRING | Yes | |
 | email | STRING | Yes | Must be unique, valid email |
 | password | STRING | Yes | Min 6 characters |
-| role | STRING | Yes | client, contractor, or inspector (default: client) |
+| role | STRING | Yes | `client`, `contractor`, `inspector`, or `admin` (default: `client`) |
 
 ### Project
 
@@ -97,6 +101,89 @@ The server will run at `http://localhost:3000`.
 | updateId | INTEGER | Yes | References Update |
 
 ## API Endpoints
+
+### Authentication
+
+Base path: **`/api/auth`**
+
+#### POST /api/auth/register
+
+Creates a new user account (password is hashed before storage).
+
+| Field | Required | Notes |
+|-------|----------|--------|
+| `name` | Yes | Display name |
+| `email` | Yes | Must be a valid email; must be unique |
+| `password` | Yes | Stored hashed (min length enforced by the User model, e.g. 6+ characters) |
+| `role` | No | One of `client`, `contractor`, `inspector`, `admin` (defaults per model if omitted) |
+
+**Request body example:**
+
+```json
+{
+  "name": "Ama Boateng",
+  "email": "ama@example.com",
+  "password": "securepassword",
+  "role": "client"
+}
+```
+
+**Responses**
+
+| Status | Body |
+|--------|------|
+| `201 Created` | `{ "message": "User registered successfully", "user": { "id", "name", "email" } }` |
+| `400 Bad Request` | `{ "errors": [...] }` if email/password fail validation (express-validator) |
+| `400 Bad Request` | `{ "error": "User with this email already exists" }` if email is taken |
+| `500 Internal Server Error` | `{ "error": "Failed to register user" }` |
+
+---
+
+#### POST /api/auth/login
+
+Authenticates a user and returns a JWT.
+
+| Field | Required |
+|-------|----------|
+| `email` | Yes |
+| `password` | Yes |
+
+**Request body example:**
+
+```json
+{
+  "email": "ama@example.com",
+  "password": "securepassword"
+}
+```
+
+**Responses**
+
+| Status | Body |
+|--------|------|
+| `200 OK` | `{ "message": "Login successful", "token": "<jwt>", "user": { "id", "name", "email" } }` |
+| `401 Unauthorized` | `{ "error": "Invalid email or password" }` (unknown email or wrong password) |
+| `500 Internal Server Error` | `{ "error": "Failed to login" }` |
+
+The JWT payload includes `id`, `name`, `email`, and `role`. Use it on protected routes as:
+
+`Authorization: Bearer <token>`
+
+---
+
+#### POST /api/auth/logout
+
+Stateless placeholder: returns success. Clients should discard the JWT locally (the API does not maintain a server-side session list for tokens).
+
+**Response:** `200 OK`
+
+```json
+{
+  "message": "Logout successful"
+}
+```
+
+---
 
 ### Users
 
