@@ -74,8 +74,25 @@ async function requireProjectOwner(req, res, next) {
 }
 
 
+function requireAdmin(req, res, next) {
+    // Check if user is authenticated first
+    if (!req.user) {
+        return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    // Check if user has admin role
+    if (req.user.role === 'admin') {
+        next();
+    } else {
+        return res.status(403).json({ 
+            error: 'Access denied. Admin role required.' 
+        });
+    }
+}
+
 module.exports = {
     requireAuth,
     requireRole,
-    requireProjectOwner
+    requireProjectOwner,
+    requireAdmin
 };
