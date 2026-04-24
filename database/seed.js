@@ -1,4 +1,5 @@
 const { db, User, Project, Update, Inspection } = require('./index');
+const bcrypt = require('bcrypt');
 
 async function seedDatabase() {
     try {
@@ -6,23 +7,26 @@ async function seedDatabase() {
         console.log('Database reset successfully.');
 
         // Create sample users
+        const hashedPassword = await bcrypt.hash('password123', 10);
+
+        // Create sample users
         const users = await User.bulkCreate([
             {
                 name: 'Kwame Mensah',
                 email: 'kwame@example.com',
-                password: 'password123',
+                password: hashedPassword,
                 role: 'client'
             },
             {
                 name: 'Ama Serwaa',
                 email: 'ama@example.com',
-                password: 'password123',
+                password: hashedPassword,
                 role: 'contractor'
             },
             {
                 name: 'Kofi Asante',
                 email: 'kofi@example.com',
-                password: 'password123',
+                password: hashedPassword,
                 role: 'inspector'
             }
         ]);

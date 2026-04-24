@@ -3,12 +3,16 @@ const { User } = require('../../database/index');
 const requireAuth = require('../../middleware/auth');
 
 // GET all users
-router.get('/', async (req, res, next) => {
+router.get('/', requireAuth, async (req, res) => {
     try {
-        const users = await User.findAll();
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email', 'role'] // Don't return passwords
+        });
+        
         res.json(users);
-    } catch (err) {
-        next(err);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Failed to fetch users' });
     }
 });
 
