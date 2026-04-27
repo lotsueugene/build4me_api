@@ -9,7 +9,7 @@ https://documenter.getpostman.com/view/51612020/2sBXqCPPa6#c97aa43e-8df0-455d-b7
 
 - **Runtime:** Node.js
 - **Framework:** Express
-- **Database:** SQLite with Sequelize ORM
+- **Database:** SQLite with Sequelize ORM at developement,Postgres at production
 - **Testing:** Jest & Supertest
 
 ## Setup & Installation
